@@ -38,5 +38,5 @@ Plank, 70, 5
 Plank (push up position), 70, 5
 Side Plank (Left + Right), 70, 5
 Mountain Climber, 50, 5
-Bird Dog 50, 5
+Bird Dog, 50, 5
 Superman, 40, 5
