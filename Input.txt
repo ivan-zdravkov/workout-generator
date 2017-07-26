@@ -1,0 +1,42 @@
+3
+1
+
+[Push]
+Push up, 20, 2
+Diamond push up, 20, 2
+Wide grip push up, 20, 2
+Incline push up, 20, 2
+Decline push up, 20, 2
+Tricep dip, 20, 2
+
+[Pull]
+Pull up, 5, 1
+Wide grip pull up, 5, 1
+Chin up, 5, 1
+Negative pull up, 10, 2
+Negative wide grip, 10, 2
+Negative chin up, 10, 2
+
+[Legs]
+Squat, 50, 5
+High stepping, 50, 5
+Wall sit, 50, 5
+Knee kick, 50, 5
+Squat position punches, 50, 5
+Calf raises, 50, 5
+
+[Abs]
+Crunches, 50, 5
+Long arm crunches, 50, 5
+Bycicle twists, 50, 5
+Russian Twists, 50, 5
+Leg raises (ground), 50, 5
+Leg raises (hanging), 50, 5
+
+[Core]
+Plank, 70, 5
+Plank (push up position), 70, 5
+Side Plank (Left + Right), 70, 5
+Mountain Climber, 50, 5
+Bird Dog 50, 5
+Superman, 40, 5
