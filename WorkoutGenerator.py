@@ -3,6 +3,7 @@
 import httplib2
 import argparse
 import datetime
+import sys
 import os
 
 from calendar import monthrange
@@ -12,6 +13,8 @@ from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
+
+print('Application is running...')
 
 SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = 'client_secret.json'
@@ -24,9 +27,26 @@ except ImportError:
 
 
 def main():
-    file = parse_file('Input.txt')
-    workout_plan = generate_workout_plan(file)
-    create_google_calendar_events(workout_plan)
+    try:
+        file = parse_file('Input.txt')
+        print('File successfully parsed...')
+    except:
+        print('File could not be parsed...')
+        return
+
+    try:
+        workout_plan = generate_workout_plan(file)
+        print('Workout successfully generated...')
+    except:
+        print('Workout could not be generated...')
+        return
+
+    try:
+        create_google_calendar_events(workout_plan)
+        print('Google Calendar Events successfully generated...')
+    except:
+        print('Google Calendar Events could not be generated...')
+        return
 
 
 def create_google_calendar_events(workout_plan):
@@ -60,8 +80,7 @@ def create_google_calendar_events(workout_plan):
                 ],
             },
         }
-
-        event = service.events().insert(calendarId='primary', body=event).execute()
+        service.events().insert(calendarId='primary', body=event).execute()
 
 
 def get_credentials():
@@ -190,3 +209,5 @@ def parse_file(name):
     return result
 
 main()
+
+print("Exiting Application...")

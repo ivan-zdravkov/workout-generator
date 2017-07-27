@@ -11,5 +11,11 @@ The parser creates the specific month's workout regimen, picking the specified n
 [Day 31](https://bytebucket.org/workoutgeneratorteam/workout-generator/raw/5e3787028d77477c9244ce50acf1182093375383/Examples/Day31.JPG)
 
 ## Setup
-* [Python 3.6.2](https://www.python.org/downloads/)
-* Input.txt file example is provided in the repository and must be placed in the same directory as the WorkoutGenerator.py file
+* Install [Python 3.6.2](https://www.python.org/downloads/)
+* Edit the Input.txt file in the repository to match your workout preferences
+* Open a Command Prompt window, navigate to the Repository directory and execute the Python script > "python WorkoutGenerator.py" 
+* [Optional] If you have not yet used the application, your default browser will open and you will be promted to authenticate using a Google account. Your events will then be created to this Google account's calendar.
+* The "Google Calendar Events successfully generated..." message will be printed on the console after the Events are created.
+
+## Notes
+* Try not to execute the application multiple times for a single month, or you will end up with duplicate Events on your Calendar as did I, while testing.
