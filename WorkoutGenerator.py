@@ -15,7 +15,7 @@ from oauth2client.file import Storage
 
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
 CLIENT_SECRET_FILE = 'client_secret.json'
-APPLICATION_NAME = 'workout planer'
+APPLICATION_NAME = 'Workout Planner'
 
 try:
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
