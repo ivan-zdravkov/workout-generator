@@ -1,12 +1,57 @@
 #!/usr/bin/env python
 
-import json
+import httplib2
+import argparse
+import datetime
+import os
+
 from calendar import monthrange
 from random import shuffle
+
+from apiclient import discovery
+from oauth2client import client
+from oauth2client import tools
+from oauth2client.file import Storage
+
+SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
+CLIENT_SECRET_FILE = 'client_secret.json'
+APPLICATION_NAME = 'workout planer'
+
+try:
+    flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
+except ImportError:
+    flags = None
+
 
 def main():
     file = parse_file('Input.txt')
     workout_plan = generate_workout_plan(file)
+    create_google_calendar_events(workout_plan)
+
+
+def create_google_calendar_events(workout_plan):
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+
+
+def get_credentials():
+    home_dir = os.path.expanduser('~')
+    credential_dir = os.path.join(home_dir, '.credentials')
+    if not os.path.exists(credential_dir):
+        os.makedirs(credential_dir)
+    credential_path = os.path.join(credential_dir, 'calendar-python-quickstart.json')
+
+    store = Storage(credential_path)
+    credentials = store.get()
+    if not credentials or credentials.invalid:
+        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+        flow.user_agent = APPLICATION_NAME
+        if flags:
+            credentials = tools.run_flow(flow, store, flags)
+
+        print('Storing credentials to ' + credential_path)
+    return credentials
 
 
 def generate_day_plan(exercise_groups, number_of_exercises):
