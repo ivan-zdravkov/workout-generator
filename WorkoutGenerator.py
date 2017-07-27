@@ -13,7 +13,7 @@ from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 
-SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
+SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Workout Planner'
 
@@ -34,13 +34,43 @@ def create_google_calendar_events(workout_plan):
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
+    for workout in workout_plan:
+        description = ''
+
+        for exercise in workout.exercises:
+            description += exercise.name + ' - ' + str(exercise.repetitions) + '\n'
+
+        date = str(workout.year) + '-' + str(workout.month) + '-' + str(workout.day)
+
+        event = {
+            'summary': 'Workout',
+            'description': description,
+            'start': {
+                'dateTime': date + 'T08:00:00+03:00',
+                'timeZone': 'Europe/Sofia',
+            },
+            'end': {
+                'dateTime': date + 'T08:30:00+03:00',
+                'timeZone': 'Europe/Sofia',
+            },
+            'reminders': {
+                'useDefault': False,
+                'overrides': [
+                    {'method': 'popup', 'minutes': 10},
+                ],
+            },
+        }
+
+        event = service.events().insert(calendarId='primary', body=event).execute()
+
 
 def get_credentials():
     home_dir = os.path.expanduser('~')
     credential_dir = os.path.join(home_dir, '.credentials')
     if not os.path.exists(credential_dir):
         os.makedirs(credential_dir)
-    credential_path = os.path.join(credential_dir, 'calendar-python-quickstart.json')
+    credential_path = os.path.join(credential_dir,
+                                   'calendar-python-quickstart.json')
 
     store = Storage(credential_path)
     credentials = store.get()
@@ -49,7 +79,8 @@ def get_credentials():
         flow.user_agent = APPLICATION_NAME
         if flags:
             credentials = tools.run_flow(flow, store, flags)
-
+        else:  # Needed only for compatibility with Python 2.6
+            credentials = tools.run(flow, store)
         print('Storing credentials to ' + credential_path)
     return credentials
 
