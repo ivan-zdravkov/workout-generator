@@ -54,7 +54,10 @@ def create_google_calendar_events(workout_plan):
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
+    current = 0
+
     for workout in workout_plan:
+        current += 1
         description = ''
 
         for exercise in workout.exercises:
@@ -81,6 +84,8 @@ def create_google_calendar_events(workout_plan):
             },
         }
         service.events().insert(calendarId='primary', body=event).execute()
+
+        print(str(int(current / len(workout_plan) * 100)) + '% complete.')
 
 
 def get_credentials():
