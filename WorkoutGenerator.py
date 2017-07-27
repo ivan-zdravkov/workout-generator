@@ -1,9 +1,45 @@
 #!/usr/bin/env python
 
+from calendar import monthrange
+
 def main():
     file = parse_file('Input.txt')
+    workout_plan = generate_workout_plan(file)
 
-    exercise_groups = file.exerciseGroups
+def generate_day_plan(exercise_groups):
+    day_plan = lambda: None
+
+    return day_plan
+
+def generate_workout_plan(file):
+    workout_days = 0
+    rest_days = 0
+    mode = 'workout'
+
+    workout_plan = []
+
+    for day in range(1, monthrange(file.year, file.month)[1] + 1):
+        if mode == 'workout':
+            workout_days += 1
+
+            day_plan = generate_day_plan(file.exerciseGroups)
+            day_plan.year = file.year
+            day_plan.month = file.month
+            day_plan.day = day
+
+            workout_plan.append(day_plan)
+
+            if workout_days == file.workoutDays:
+                workout_days = 0
+                mode = 'rest'
+        else:
+            rest_days += 1
+
+            if rest_days == file.restDays:
+                rest_days = 0
+                mode = 'workout'
+
+    return workout_plan
 
 def parse_file(name):
     with open(name) as f:
@@ -15,10 +51,12 @@ def parse_file(name):
     current_group = lambda: None
     result = lambda: None
     result.exerciseGroups = []
-    result.workoutDays = rows[0]
-    result.restDays = rows[1]
+    result.year = int(rows[0].split(',', 1)[0])
+    result.month = int(rows[0].split(',', 1)[1])
+    result.workoutDays = int(rows[1])
+    result.restDays = int (rows[2])
 
-    for i in range(2, len(rows)):
+    for i in range(3, len(rows)):
         row = rows[i]
 
         if row[0] == '[':  # If name of exercise group
