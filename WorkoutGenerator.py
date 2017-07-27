@@ -1,15 +1,44 @@
 #!/usr/bin/env python
 
+import json
 from calendar import monthrange
+from random import shuffle
 
 def main():
     file = parse_file('Input.txt')
     workout_plan = generate_workout_plan(file)
 
-def generate_day_plan(exercise_groups):
+
+def generate_day_plan(exercise_groups, number_of_exercises):
     day_plan = lambda: None
+    day_plan.exercises = []
+
+    for i in range(0, number_of_exercises):
+        shuffle(exercise_groups)
+
+        for exercise_group in exercise_groups:
+            not_done_exercises = list(x for x in exercise_group.exercises if x.alreadyUsed is False)
+
+            if not not_done_exercises :
+                for exercise in exercise_group.exercises:
+                    exercise.repetitions += exercise.increment
+                    exercise.alreadyUsed = False
+
+                not_done_exercises = list(x for x in exercise_group.exercises if x.alreadyUsed is False)
+
+            shuffle(not_done_exercises)
+
+            exercise = not_done_exercises[0]
+            exercise.alreadyUsed = True
+
+            exerciseToAdd = lambda: None
+            exerciseToAdd.name = exercise.name
+            exerciseToAdd.repetitions = exercise.repetitions
+
+            day_plan.exercises.append(exerciseToAdd)
 
     return day_plan
+
 
 def generate_workout_plan(file):
     workout_days = 0
@@ -22,7 +51,7 @@ def generate_workout_plan(file):
         if mode == 'workout':
             workout_days += 1
 
-            day_plan = generate_day_plan(file.exerciseGroups)
+            day_plan = generate_day_plan(file.exerciseGroups, file.numberOfExercises)
             day_plan.year = file.year
             day_plan.month = file.month
             day_plan.day = day
@@ -41,6 +70,7 @@ def generate_workout_plan(file):
 
     return workout_plan
 
+
 def parse_file(name):
     with open(name) as f:
         rows = f.readlines()
@@ -53,8 +83,9 @@ def parse_file(name):
     result.exerciseGroups = []
     result.year = int(rows[0].split(',', 1)[0])
     result.month = int(rows[0].split(',', 1)[1])
-    result.workoutDays = int(rows[1])
-    result.restDays = int (rows[2])
+    result.workoutDays = int(int(rows[1].split(',', 1)[0]))
+    result.restDays = int(int(rows[1].split(',', 1)[1]))
+    result.numberOfExercises = int(rows[2])
 
     for i in range(3, len(rows)):
         row = rows[i]
@@ -69,6 +100,7 @@ def parse_file(name):
             exercise.name = parsed_row[0]
             exercise.repetitions = int(parsed_row[1])
             exercise.increment = int(parsed_row[2])
+            exercise.alreadyUsed = False
             current_group.exercises.append(exercise)
 
         if i + 1 == len(rows):  # If end of file
