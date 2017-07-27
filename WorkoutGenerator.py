@@ -1,37 +1,46 @@
 #!/usr/bin/env python
 
-with open('Input.txt') as f:
-    inputRows = f.readlines()
+def main():
+    file = parse_file('Input.txt')
 
-inputRows = [x.strip() for x in inputRows]  # Remove white space, /n
-inputRows = [x for x in inputRows if x]  # Remove empty rows
+    exercise_groups = file.exerciseGroups
 
-exerciseGroups = []
-workoutDays = inputRows[0]
-restDays = inputRows[1]
+def parse_file(name):
+    with open(name) as f:
+        rows = f.readlines()
 
-rowsToIterate = range(2, len(inputRows))
-currentGroup = lambda: None
+    rows = [x.strip() for x in rows]  # Remove white space, /n
+    rows = [x for x in rows if x]  # Remove empty rows
 
-for i in rowsToIterate:
-    currentRow = inputRows[i]
+    current_group = lambda: None
+    result = lambda: None
+    result.exerciseGroups = []
+    result.workoutDays = rows[0]
+    result.restDays = rows[1]
 
-    if currentRow[0] == '[':  # If name of exercise group
-        currentGroup = lambda: None
-        currentGroup.name = currentRow[1:len(currentRow) - 1]
-        currentGroup.exercises = []
-    else:
-        parsedCurrentRow = [x.strip() for x in currentRow.split(',', 2)]
-        exercise = lambda: None
-        exercise.name = parsedCurrentRow[0]
-        exercise.repetitions = int(parsedCurrentRow[1])
-        exercise.increment = int(parsedCurrentRow[2])
-        currentGroup.exercises.append(exercise)
+    for i in range(2, len(rows)):
+        row = rows[i]
 
-    if i + 1 == len(inputRows):  # If end of file
-        exerciseGroups.append(currentGroup)
+        if row[0] == '[':  # If name of exercise group
+            current_group = lambda: None
+            current_group.name = row[1:len(row) - 1]
+            current_group.exercises = []
+        else:
+            parsed_row = [x.strip() for x in row.split(',', 2)]  # Get the 3 comma separated values and trim them
+            exercise = lambda: None
+            exercise.name = parsed_row[0]
+            exercise.repetitions = int(parsed_row[1])
+            exercise.increment = int(parsed_row[2])
+            current_group.exercises.append(exercise)
 
-    if i + 1 <= len(inputRows) - 1:  # If next line is '[xxx]'
-        nextRow = inputRows[i + 1]
-        if nextRow[0] == '[':
-            exerciseGroups.append(currentGroup)
+        if i + 1 == len(rows):  # If end of file
+            result.exerciseGroups.append(current_group)
+
+        if i + 1 <= len(rows) - 1:  # If next line is '[xxx]'
+            next_row = rows[i + 1]
+            if next_row[0] == '[':
+                result.exerciseGroups.append(current_group)
+
+    return result
+
+main()
