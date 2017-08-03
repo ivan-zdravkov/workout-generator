@@ -158,13 +158,13 @@ def generate_workout_plan(file):
 
             workout_plan.append(day_plan)
 
-            if workout_days == file.workoutDays:
+            if workout_days >= file.workoutDays:
                 workout_days = 0
                 mode = 'rest'
         else:
             rest_days += 1
 
-            if rest_days == file.restDays:
+            if rest_days >= file.restDays:
                 rest_days = 0
                 mode = 'workout'
 
